@@ -12,7 +12,7 @@ ui <- page_sidebar(
             selectInput( 
                   "select", 
                   "Chose an option:", 
-                  list("Slope" = "S", "Aspect" = "A", "Reclassified Aspect" = "RA") 
+                  list("Slope" = "S", "Aspect" = "A") 
             )   
             
       ),
@@ -35,24 +35,7 @@ server <- function(input, output){
       slope <- terrain(dem, v = "slope", unit = "degrees", neighbors = 8)
       
       # b. Extract Aspect:
-      aspect <- terrain(dem, v = "aspect", unit = "degrees")
-      
-      # a. Create Aspect Classification Matrix:
-      asp_class <- matrix(c(
-            0, 45, 1,
-            45, 90, 2,
-            90, 175, 2,
-            175, 180, 3,
-            180, 225, 3,
-            225, 270, 4,
-            270, 315, 4,
-            315, 360, 1
-      ), ncol = 3, byrow = TRUE)
-      
-      
-      # b. Reclassify Aspect:
-      asp <- classify(aspect, asp_class)
-      
+      aspect <- terrain(dem, v = "aspect", unit = "degrees")    
       
       output$plot <- renderPlot({
             
@@ -69,17 +52,7 @@ server <- function(input, output){
                         tm_raster(style = "cont")
                   
             }
-            
-            else if(input$select == "RA"){
-                  
-                  # c. Visualize Reclassified Aspect:
-                  
-                  tm_shape(asp) +
-                        tm_raster(style = "cat", palette = c("white", "blue", "green", "yellow", "red"),
-                                  labels = c(NA, "North", "East", "South", "West"), alpha = 0.2)
-                  
-            }
-            
+                       
             
       })
       
